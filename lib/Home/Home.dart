@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:astro_tak/Models/LocationPostModels.dart';
 import 'package:astro_tak/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,16 +16,33 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   DateTime currentDate = DateTime.now();
+
+  // List<LocationPostModel> locationList = [];
+  // Future<List<LocationPostModel>> getLocation() async {
+  //   final response = await http.get(Uri.parse(
+  //       "https://www.astrotak.com/astroapi/api/location/place?inputPlace=Delhi"));
+  //   var data = jsonDecode(response.body.toString());
+  //   if (response.statusCode == 200) {
+  //     for (Map i in data) {
+  //       locationList.add(LocationPostModel.fromJson(i));
+  //     }
+  //     return locationList;
+  //   } else {
+  //     return locationList;
+  //   }
+  // }
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
         context: context,
         initialDate: currentDate,
         firstDate: DateTime(2015),
         lastDate: DateTime(2050));
-    if (pickedDate != null && pickedDate != currentDate)
+    if (pickedDate != null && pickedDate != currentDate) {
       setState(() {
         currentDate = pickedDate;
       });
+    }
   }
 
   @override
@@ -103,7 +123,10 @@ class _HomeState extends State<Home> {
                                         DateFormat.YEAR_ABBR_MONTH_WEEKDAY_DAY)
                                     .format(currentDate)
                                     .toString()),
-                                const Icon(Icons.arrow_drop_down),
+                                InkWell(
+                                  onTap: () => _selectDate(context),
+                                  child: const Icon(Icons.arrow_drop_down),
+                                ),
                               ],
                             ),
                           ),
@@ -130,6 +153,23 @@ class _HomeState extends State<Home> {
                             height: 40,
                             color: Colors.white,
                           ),
+                          // Expanded(
+                          //   child: FutureBuilder(
+                          //     future: getLocation(),
+                          //     builder: (context, snapshot) {
+                          //       if (snapshot.hasData) {
+                          //         return Text("Loading!");
+                          //       } else {
+                          //         return ListView.builder(
+                          //           itemCount: locationList.length,
+                          //           itemBuilder: (context, index) {
+                          //             return Text(index.toString());
+                          //           },
+                          //         );
+                          //       }
+                          //     },
+                          //   ),
+                          // ),
                           Container(
                             width: MediaQuery.of(context).size.width / 1.5,
                             height: 40,

@@ -1,8 +1,24 @@
+import 'package:astro_tak/Models/PostModels.dart';
 import 'package:astro_tak/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Column card(BuildContext context) {
+Column card(
+    BuildContext context,
+    String firstName,
+    String lastName,
+    String imgUrl,
+    List<Skills> skill,
+    List<Languages> languages,
+    num experience) {
+  String lang = "", skills = "";
+  for (int i = 0; i < skill.length; i++) {
+    skills += skill[i].name.toString() + ", ";
+  }
+  for (int i = 0; i < languages.length; i++) {
+    lang += languages[i].name.toString();
+    lang += ", ";
+  }
   return Column(
     children: [
       Card(
@@ -13,8 +29,8 @@ Column card(BuildContext context) {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset(
-                "assets/icons/image.webp",
+              Image.network(
+                imgUrl,
                 width: 80,
                 height: 80,
                 fit: BoxFit.fill,
@@ -30,14 +46,14 @@ Column card(BuildContext context) {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Arvind Shukla",
+                          firstName + " " + lastName,
                           style: GoogleFonts.poppins(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
-                          "25 Years",
+                          experience.ceil().toString() + " Years",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             color: ATColors.kGrey,
@@ -47,11 +63,8 @@ Column card(BuildContext context) {
                     ),
                   ),
                   astrologersData(
-                      "assets/icons/description.png",
-                      "Coffe Cup Reading,\nKundli Grasg, Dosh, Vasthu,\nPlamshy, Face, nosos,\nReading, Tarrot",
-                      false),
-                  astrologersData(
-                      "assets/icons/language.png", "English, Hindi", false),
+                      "assets/icons/description.png", skills, false),
+                  astrologersData("assets/icons/language.png", lang, false),
                   astrologersData("assets/icons/price.png", "Rs.100/min", true),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
@@ -119,12 +132,18 @@ Row astrologersData(String path, String text, bool flag) {
         ),
       ),
       const SizedBox(width: 8),
-      Text(
-        text,
-        style: GoogleFonts.poppins(
-          fontSize: 13,
-          color: ATColors.kGrey,
-          fontWeight: (flag) ? FontWeight.bold : null,
+      Card(
+        elevation: 0.0,
+        child: SizedBox(
+          width: 250,
+          child: Text(
+            text,
+            style: GoogleFonts.poppins(
+              fontSize: 13,
+              color: ATColors.kGrey,
+              fontWeight: (flag) ? FontWeight.bold : null,
+            ),
+          ),
         ),
       ),
     ],
