@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: appBar(), // Add comments
       drawer: const Drawer(),
       body: screens[_currentIndex],
       bottomNavigationBar: buttomNavigationBar(),

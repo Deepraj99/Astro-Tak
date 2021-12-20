@@ -65,7 +65,7 @@ class PostModelData {
   late final String firstName;
   late final String lastName;
   late final String? aboutMe;
-  late final Null profliePicUrl;
+  late final String? profliePicUrl;
   late final num experience;
   late final List<Languages> languages;
   late final num minimumCallDuration;
@@ -81,27 +81,34 @@ class PostModelData {
   late final Availability? availability;
 
   PostModelData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    urlSlug = json['urlSlug'];
-    namePrefix = null;
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    aboutMe = null;
-    profliePicUrl = null;
-    experience = json['experience'];
-    languages =
-        List.from(json['languages']).map((e) => Languages.fromJson(e)).toList();
-    minimumCallDuration = json['minimumCallDuration'];
-    minimumCallDurationCharges = json['minimumCallDurationCharges'];
-    additionalPerMinuteCharges = json['additionalPerMinuteCharges'];
-    isAvailable = json['isAvailable'];
-    rating = null;
-    skills = List.from(json['skills']).map((e) => Skills.fromJson(e)).toList();
-    isOnCall = json['isOnCall'];
-    freeMinutes = json['freeMinutes'];
-    additionalMinute = json['additionalMinute'];
-    images = Images.fromJson(json['images']);
-    availability = null;
+    try {
+      id = json['id'];
+      urlSlug = json['urlSlug'];
+      namePrefix = null;
+      firstName = json['firstName'];
+      lastName = json['lastName'];
+      aboutMe = json["aboutMe"];
+      profliePicUrl = null;
+      experience = json['experience'];
+      languages = List.from(json['languages'])
+          .map((e) => Languages.fromJson(e))
+          .toList();
+      minimumCallDuration = json['minimumCallDuration'];
+      minimumCallDurationCharges = json['minimumCallDurationCharges'];
+      additionalPerMinuteCharges = json['additionalPerMinuteCharges'];
+      isAvailable = json['isAvailable'];
+      rating = null;
+      skills =
+          List.from(json['skills']).map((e) => Skills.fromJson(e)).toList();
+      isOnCall = json['isOnCall'];
+      freeMinutes = json['freeMinutes'];
+      additionalMinute = json['additionalMinute'];
+      images = Images.fromJson(json['images']);
+      availability = null;
+    } catch (e) {
+      print("error fromJson PosModelData: ");
+      print(e);
+    }
   }
 
   Map<String, dynamic> toJson() {
