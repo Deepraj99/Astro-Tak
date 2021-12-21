@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:astro_tak/Models/LocationPostModels.dart';
+import 'package:astro_tak/Models/PanchangModelData.dart';
 import 'package:astro_tak/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,21 +17,46 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   DateTime currentDate = DateTime.now();
+  late PanchangData panchang;
 
-  // List<LocationPostModel> locationList = [];
-  // Future<List<LocationPostModel>> getLocation() async {
-  //   final response = await http.get(Uri.parse(
-  //       "https://www.astrotak.com/astroapi/api/location/place?inputPlace=Delhi"));
-  //   var data = jsonDecode(response.body.toString());
-  //   if (response.statusCode == 200) {
-  //     for (Map i in data) {
-  //       locationList.add(LocationPostModel.fromJson(i));
-  //     }
-  //     return locationList;
-  //   } else {
-  //     return locationList;
-  //   }
-  // }
+  @override
+  void initState() {
+    super.initState();
+
+    getData();
+    getPanchangData();
+  }
+
+  late String selectedLocation;
+  late List<String> lcnData;
+  late List<LocationData> postList = [];
+  late List<LocationData> location = [];
+  Future<List<LocationData>> getData() async {
+    try {
+      var res = await http.get(Uri.parse(
+          "https://www.astrotak.com/astroapi/api/location/place?inputPlace=Delhi"));
+      var body = jsonDecode(res.body.toString());
+      var model = LocationPostModel.fromJson(body);
+      postList = model.data;
+      setState(() {
+        location = postList;
+        print(location[0].placeName);
+        selectedLocation = location[0].placeName.toString();
+        lcnData = [
+          location[0].placeName.toString(),
+          location[1].placeName.toString(),
+          location[2].placeName.toString(),
+          location[3].placeName.toString(),
+          location[4].placeName.toString(),
+        ];
+      });
+    } catch (e) {
+      print("error");
+      return postList;
+    }
+
+    return postList;
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -42,6 +68,34 @@ class _HomeState extends State<Home> {
       setState(() {
         currentDate = pickedDate;
       });
+    }
+  }
+
+  //Panchang api
+  var model;
+  getPanchangData() async {
+    try {
+      var res = await http.post(
+        Uri.parse(
+            'https://www.astrotak.com/astroapi/api/horoscope/daily/panchang'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'day': "2",
+          'month': '7',
+          'year': "2021",
+          'placeId': "ChIJL_P_CXMEDTkRw0ZdG-0GVvw"
+        }),
+      );
+
+      var body = jsonDecode(res.body.toString());
+      model = PanchangPostModel.fromJson(body);
+      setState(() {
+        panchang = model.data;
+      });
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -146,40 +200,42 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Stack(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: 40,
-                            color: Colors.white,
-                          ),
-                          // Expanded(
-                          //   child: FutureBuilder(
-                          //     future: getLocation(),
-                          //     builder: (context, snapshot) {
-                          //       if (snapshot.hasData) {
-                          //         return Text("Loading!");
-                          //       } else {
-                          //         return ListView.builder(
-                          //           itemCount: locationList.length,
-                          //           itemBuilder: (context, index) {
-                          //             return Text(index.toString());
-                          //           },
-                          //         );
-                          //       }
-                          //     },
-                          //   ),
-                          // ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: 40,
-                            padding: const EdgeInsets.fromLTRB(5, 7, 0, 0),
-                            child: Text(
-                              "Delhi, India",
-                              style: GoogleFonts.poppins(),
-                            ),
-                          ),
-                        ],
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
+                        width: MediaQuery.of(context).size.width / 1.5,
+                        height: 100,
+                        child: FormField<String>(
+                          builder: (FormFieldState<String> state) {
+                            return InputDecorator(
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0, vertical: 15.0),
+                                labelText: "Select Location",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0)),
+                              ),
+                              isEmpty: selectedLocation == '' ||
+                                  selectedLocation == null,
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: selectedLocation,
+                                  isDense: true,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedLocation = value!;
+                                    });
+                                  },
+                                  items: lcnData.map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -211,40 +267,49 @@ class _HomeState extends State<Home> {
           margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           color: Colors.grey[400],
         ),
-        SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Card(
-                  elevation: 0.0,
-                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Tithi",
-                          style: GoogleFonts.poppins(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        texts("Tithi Numbar:", "13"),
-                        texts("Tithi Name:", "Shukla Trayodashi"),
-                        texts("Spacial:", "Jaya Tithi"),
-                        texts("Summary:",
-                            "Auspicious day to start important\nfulfillment wearing new clothes,\npleasures"),
-                        texts("Delty:", "Cupid"),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: 1,
+            itemBuilder: (context, index) {
+              return newCard(
+                  context,
+                  panchang.tithi.details.tithiNumber.toString(),
+                  panchang.tithi.details.tithiName.toString(),
+                  panchang.tithi.details.special.toString(),
+                  panchang.tithi.details.summary.toString(),
+                  panchang.tithi.details.deity.toString());
+            },
           ),
         ),
       ],
+    );
+  }
+
+  Card newCard(BuildContext context, String tithiNumber, String tithiName,
+      String special, String summary, String deity) {
+    return Card(
+      elevation: 0.0,
+      margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Tithi",
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            texts("Tithi Numbar:", tithiNumber),
+            texts("Tithi Name:", tithiName),
+            texts("Spacial:", special),
+            texts("Summary:", summary),
+            texts("Delty:", deity),
+          ],
+        ),
+      ),
     );
   }
 

@@ -12,7 +12,7 @@ class LocationPostModel {
   late final bool success;
   late final String message;
   late final String apiName;
-  late final List<Data> data;
+  late final List<LocationData> data;
 
   LocationPostModel.fromJson(Map<dynamic, dynamic> json) {
     httpStatus = json['httpStatus'];
@@ -20,7 +20,8 @@ class LocationPostModel {
     success = json['success'];
     message = json['message'];
     apiName = json['apiName'];
-    data = List.from(json['data']).map((e) => Data.fromJson(e)).toList();
+    data =
+        List.from(json['data']).map((e) => LocationData.fromJson(e)).toList();
   }
 
   Map<String, dynamic> toJson() {
@@ -35,15 +36,15 @@ class LocationPostModel {
   }
 }
 
-class Data {
-  Data({
+class LocationData {
+  LocationData({
     required this.placeName,
     required this.placeId,
   });
   late final String placeName;
   late final String placeId;
 
-  Data.fromJson(Map<String, dynamic> json) {
+  LocationData.fromJson(Map<String, dynamic> json) {
     placeName = json['placeName'];
     placeId = json['placeId'];
   }

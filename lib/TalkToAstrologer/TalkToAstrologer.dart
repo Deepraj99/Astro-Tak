@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'dart:developer';
-import 'package:astro_tak/AstrologersApi.dart';
+import 'package:astro_tak/MenuItem.dart';
 import 'package:astro_tak/Models/PostModels.dart';
 import 'package:astro_tak/SearchWidget.dart';
 import 'package:astro_tak/TalkToAstrologer/Card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
 
 class TalkToAstrologer extends StatefulWidget {
   const TalkToAstrologer({Key? key}) : super(key: key);
@@ -19,22 +17,30 @@ class TalkToAstrologer extends StatefulWidget {
 }
 
 class _TalkToAstrologerState extends State<TalkToAstrologer> {
-  // final controller = TextEditingController();
   late List<PostModelData> strologers = [];
   String query = "";
   Timer? debouncer;
+
+  // GlobalKey<ScaffoldState> _scaff = new GlobalKey<ScaffoldState>();
+  // static const _popItem = <String>[
+  //   "one",
+  //   "Two",
+  //   "Three",
+  //   "Four",
+  // ];
+  // static final List<PopupMenuItem<String>> _pop = _popItem
+  //     .map((String val) => PopupMenuItem<String>(
+  //           value: val,
+  //           child: Text(val),
+  //         ))
+  //     .toList();
+  // late String value;
 
   @override
   void initState() {
     super.initState();
     getData();
   }
-
-  // final TextEditingController filter = new TextEditingController();
-  // final dio = new Dio(); //to making http request
-  // String _searchText = "";
-  // List<Card> names = [];
-  // List<Card> filteredNames = [];
 
   late List<PostModelData> postList = [];
   Future<List<PostModelData>> getData() async {
@@ -85,9 +91,9 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    options("assets/icons/search.png"),
-                    options("assets/icons/filter.png"),
-                    options("assets/icons/sort.png"),
+                    options("assets/icons/search.png", searchItems),
+                    options("assets/icons/filter.png", filters),
+                    options("assets/icons/sort.png", sortLists),
                   ],
                 ),
               ),
@@ -95,99 +101,22 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
           ),
         ),
         buildSearch(),
-        //search bar
-        // Container(
-        //   decoration: BoxDecoration(
-        //     color: Color(0xfff5f8fd),
-        //     borderRadius: BorderRadius.circular(30),
-        //   ),
-        //   padding: EdgeInsets.symmetric(horizontal: 24),
-        //   margin: EdgeInsets.symmetric(horizontal: 24),
-        //   child: Row(
-        //     children: [
-        //       Expanded(
-        //         child: TextField(
-        //           controller: controller,
-        //           decoration: InputDecoration(
-        //             icon: Icon(Icons.search),
-        //             hintText: "Search Astrologer",
-        //             border: InputBorder.none,
-        //           ),
-        //         ),
-        //       ),
-        //       Icon(Icons.search),
-        //     ],
-        //   ),
-        // ),
-        // Container(
-        //   margin: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-        //   child: Material(
-        //     elevation: 2,
-        //     child: Container(
-        //       height: 40,
-        //       width: MediaQuery.of(context).size.width,
-        //       padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-        //       decoration: const BoxDecoration(
-        //         color: Colors.white24,
-        //       ),
-        //       child: Row(
-        //         children: [
-        //           Image.asset(
-        //             "assets/icons/search.png",
-        //             width: 15,
-        //             height: 15,
-        //             fit: BoxFit.fill,
-        //           ),
-        //           const SizedBox(width: 15),
-        //           Text(
-        //             "Search Astrologer",
-        //             style: GoogleFonts.poppins(
-        //               fontSize: 12,
-        //               color: Colors.grey,
-        //             ),
-        //           ),
-        //           const SizedBox(width: 160),
-        //           GestureDetector(
-        //             onTap: () {},
-        //             child: Image.asset(
-        //               "assets/icons/close.png",
-        //               width: 12,
-        //               height: 12,
-        //               fit: BoxFit.fill,
-        //               color: Colors.orange,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
         Expanded(
-            child: ListView.builder(
-          itemCount: strologers.length,
-          itemBuilder: (context, index) {
-            return card(
-              context,
-              strologers[index].firstName,
-              strologers[index].lastName,
-              strologers[index].images.medium.imageUrl,
-              strologers[index].skills,
-              strologers[index].languages,
-              strologers[index].experience,
-            );
-          },
-        )),
-        // Container(
-        //   margin: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-        //   child: SingleChildScrollView(
-        //     child: Column(
-        //       children: [
-        //         card(context),
-        //         card(context),
-        //       ],
-        //     ),
-        //   ),
-        // ),
+          child: ListView.builder(
+            itemCount: strologers.length,
+            itemBuilder: (context, index) {
+              return card(
+                context,
+                strologers[index].firstName,
+                strologers[index].lastName,
+                strologers[index].images.medium.imageUrl,
+                strologers[index].skills,
+                strologers[index].languages,
+                strologers[index].experience,
+              );
+            },
+          ),
+        ),
       ],
     );
   }
@@ -212,9 +141,9 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
     });
   }
 
-  InkWell options(String url) {
+  InkWell options(String url, Function fnc) {
     return InkWell(
-      onTap: () {},
+      onTap: () => fnc,
       child: Image.asset(
         url,
         width: 20,
@@ -223,4 +152,43 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
       ),
     );
   }
+
+  searchItems() {}
+
+  filters() {}
+
+  sortLists() {
+    // Column(
+    //   mainAxisAlignment: MainAxisAlignment.center,
+    //   children: [
+    //     Row(
+    //       children: [
+    //         const Text(
+    //           "PopUp Menu",
+    //           style: TextStyle(
+    //             fontSize: 30,
+    //           ),
+    //         ),
+    //         PopupMenuButton(
+    //           onSelected: (String val) {
+    //             value = val;
+    //           },
+    //           itemBuilder: (BuildContext context) => _pop,
+    //         ),
+    //       ],
+    //     ),
+    //   ],
+    // );
+    // [
+    //   PopupMenuButton(
+    //     itemBuilder: (context) => [
+    //       ...MenuItems.itemsFirst.map(buildItem).toList(),
+    //     ],
+    //   ),
+    // ];
+  }
+
+  // PopupMenuItem<MenuItem> buildItem(MenuItem item) => PopupMenuItem(
+  //       child: Text(item.text),
+  //     );
 }
