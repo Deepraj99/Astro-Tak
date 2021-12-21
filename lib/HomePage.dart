@@ -31,15 +31,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget floatingActionButton() {
-    return FloatingActionButton(
-      backgroundColor: Colors.orange,
-      onPressed: () {},
-      tooltip: 'Increment',
-      child: Image.asset(
-        "assets/icons/bar.png",
-        height: 25,
-        width: 25,
-        color: Colors.white,
+    return Align(
+      alignment: const Alignment(1, 0.9),
+      child: FloatingActionButton(
+        backgroundColor: Colors.orange,
+        onPressed: () {},
+        tooltip: 'Increment',
+        child: Image.asset(
+          "assets/icons/bar.png",
+          height: 25,
+          width: 25,
+          color: Colors.white,
+        ),
       ),
     );
   }

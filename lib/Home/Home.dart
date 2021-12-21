@@ -6,6 +6,7 @@ import 'package:astro_tak/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
@@ -101,13 +102,15 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           margin: const EdgeInsets.only(left: 7),
           height: 20,
-          width: MediaQuery.of(context).size.width / (2.8),
+          width: width / (2.8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -130,7 +133,7 @@ class _HomeState extends State<Home> {
         ),
         Container(
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-          width: MediaQuery.of(context).size.width,
+          width: width,
           child: Text(
             "india is a country known for its festival but knowing the exact\ndates can sometimes be difficult. To ensure you do not miss out\non the critical dates we bring you the daily panchang.",
             style: GoogleFonts.poppins(
@@ -142,8 +145,8 @@ class _HomeState extends State<Home> {
           children: [
             Container(
               margin: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-              width: MediaQuery.of(context).size.width,
-              height: 140,
+              width: width,
+              height: height * 2 / 11,
               color: Colors.orange[50],
             ),
             Column(
@@ -159,86 +162,78 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Stack(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: 40,
-                            color: Colors.white,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: 40,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(DateFormat(
-                                        DateFormat.YEAR_ABBR_MONTH_WEEKDAY_DAY)
-                                    .format(currentDate)
-                                    .toString()),
-                                InkWell(
-                                  onTap: () => _selectDate(context),
-                                  child: const Icon(Icons.arrow_drop_down),
-                                ),
-                              ],
+                      InkWell(
+                        onTap: () => _selectDate(context),
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: width / 1.5,
+                              height: 40,
+                              color: Colors.white,
                             ),
-                          ),
-                        ],
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
+                              width: width / 1.5,
+                              height: 40,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(DateFormat(DateFormat
+                                          .YEAR_ABBR_MONTH_WEEKDAY_DAY)
+                                      .format(currentDate)
+                                      .toString()),
+                                  const Icon(Icons.arrow_drop_down),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(27, 20, 0, 0),
-                  child: Row(
-                    children: [
-                      Text(
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(25, 20, 0, 0),
+                      height: 40,
+                      width: 60,
+                      alignment: Alignment.topRight,
+                      child: Text(
                         "Location:",
                         style: GoogleFonts.poppins(
                           fontSize: 13,
                         ),
                       ),
-                      const SizedBox(width: 20),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(5, 0, 0, 5),
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        height: 100,
-                        child: FormField<String>(
-                          builder: (FormFieldState<String> state) {
-                            return InputDecorator(
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0, vertical: 15.0),
-                                labelText: "Select Location",
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0)),
-                              ),
-                              isEmpty: selectedLocation == '' ||
-                                  selectedLocation == null,
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: selectedLocation,
-                                  isDense: true,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedLocation = value!;
-                                    });
-                                  },
-                                  items: lcnData.map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            );
-                          },
+                    ),
+                    Stack(
+                      children: [
+                        Container(
+                          width: width / 1.5,
+                          height: 40,
+                          margin: const EdgeInsets.fromLTRB(20, 16, 0, 0),
+                          color: Colors.white,
                         ),
-                      ),
-                    ],
-                  ),
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(25, 4, 0, 5),
+                          width: width / 1.35,
+                          height: 70,
+                          child: DropdownSearch<String>(
+                            mode: Mode.MENU,
+                            showSearchBox: true,
+                            items: lcnData,
+                            onChanged: print,
+                            selectedItem: selectedLocation,
+                            dropdownSearchDecoration: const InputDecoration(
+                              border: InputBorder.none,
+                              iconColor: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -253,9 +248,11 @@ class _HomeState extends State<Home> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  card(),
-                  card(),
-                  card(),
+                  card(true),
+                  card(false),
+                  card(true),
+                  card(false),
+                  card(true),
                 ],
               ),
             ),
@@ -272,12 +269,19 @@ class _HomeState extends State<Home> {
             itemCount: 1,
             itemBuilder: (context, index) {
               return newCard(
-                  context,
-                  panchang.tithi.details.tithiNumber.toString(),
-                  panchang.tithi.details.tithiName.toString(),
-                  panchang.tithi.details.special.toString(),
-                  panchang.tithi.details.summary.toString(),
-                  panchang.tithi.details.deity.toString());
+                context,
+                panchang.tithi.details.tithiNumber.toString(),
+                panchang.tithi.details.tithiName.toString(),
+                panchang.tithi.details.special.toString(),
+                panchang.tithi.details.summary.toString(),
+                panchang.tithi.details.deity.toString(),
+                panchang.tithi.endTime.hour.toString() +
+                    " hr " +
+                    panchang.tithi.endTime.minute.toString() +
+                    " min " +
+                    panchang.tithi.endTime.second.toString() +
+                    " sec",
+              );
             },
           ),
         ),
@@ -285,9 +289,10 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Card newCard(BuildContext context, String tithiNumber, String tithiName,
-      String special, String summary, String deity) {
+  Widget newCard(BuildContext context, String tithiNumber, String tithiName,
+      String special, String summary, String deity, String endTime) {
     return Card(
+      color: ATColors.kWhite,
       elevation: 0.0,
       margin: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       child: SizedBox(
@@ -298,7 +303,7 @@ class _HomeState extends State<Home> {
             Text(
               "Tithi",
               style: GoogleFonts.poppins(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -307,6 +312,7 @@ class _HomeState extends State<Home> {
             texts("Spacial:", special),
             texts("Summary:", summary),
             texts("Delty:", deity),
+            texts("End Time:", endTime),
           ],
         ),
       ),
@@ -318,26 +324,28 @@ class _HomeState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Card(
+          color: ATColors.kWhite,
           elevation: 0.0,
           child: Container(
             width: 140,
             child: Text(
               str1,
               style: GoogleFonts.poppins(
-                fontSize: 15,
+                fontSize: 13,
                 color: ATColors.kGrey,
               ),
             ),
           ),
         ),
         Card(
+          color: ATColors.kWhite,
           elevation: 0.0,
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width - 180,
             child: Text(
               str2,
               style: GoogleFonts.poppins(
-                fontSize: 15,
+                fontSize: 13,
                 color: ATColors.kGrey,
               ),
             ),
@@ -347,25 +355,28 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Container card() {
+  Container card(bool flag) {
     return Container(
       height: 40,
       width: 120,
       padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
       child: Row(
         children: [
-          const Icon(Icons.access_alarm),
+          (flag)
+              ? const Icon(Icons.wb_sunny, color: Color(0xFF737CA1))
+              : const Icon(Icons.star_border, color: Color(0xFF737CA1)),
           const SizedBox(width: 5),
           Column(
             children: [
               Text(
-                "Sunset",
+                flag ? "Sunset" : "Stars",
                 style: GoogleFonts.poppins(
                   fontSize: 10,
+                  color: const Color(0xFF737CA1),
                 ),
               ),
               Text(
-                "05:26 PM",
+                flag ? "01:26 PM" : "11:20 PM",
                 style: GoogleFonts.poppins(
                   fontSize: 13,
                 ),
@@ -375,7 +386,7 @@ class _HomeState extends State<Home> {
           const SizedBox(width: 10),
           Container(
             height: 40,
-            width: 2,
+            width: 1,
             color: Colors.grey,
           ),
         ],
