@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'package:astro_tak/Models/PostModels.dart';
-import 'package:astro_tak/SearchWidget.dart';
+import 'package:astro_tak/Models/AstrologerPostModels.dart';
 import 'package:astro_tak/TalkToAstrologer/Card.dart';
+import 'package:astro_tak/TalkToAstrologer/SearchWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -16,6 +16,7 @@ class TalkToAstrologer extends StatefulWidget {
 }
 
 class _TalkToAstrologerState extends State<TalkToAstrologer> {
+  // Astrologer API
   late List<PostModelData> strologers = [];
   String query = "";
   Timer? debouncer;
@@ -207,8 +208,6 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
       ],
       elevation: 8.0,
     ).then((value) {
-// NOTE: even you didnt select item this method will be called with null of value so you should call your call back with checking if value is not null
-
       if (value != null) print(value);
     });
   }

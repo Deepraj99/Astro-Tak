@@ -1,4 +1,4 @@
-import 'package:astro_tak/Models/PostModels.dart';
+import 'package:astro_tak/Models/AstrologerPostModels.dart';
 import 'package:astro_tak/utils/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

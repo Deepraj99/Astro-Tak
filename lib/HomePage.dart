@@ -1,5 +1,5 @@
 import 'package:astro_tak/Home/Home.dart';
-import 'package:astro_tak/TalkToAstrologer/AppBar.dart';
+import 'package:astro_tak/AppBar.dart';
 import 'package:astro_tak/TalkToAstrologer/TalkToAstrologer.dart';
 import 'package:astro_tak/utils/Colors.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //Different screens
   int _currentIndex = 1;
   final screens = [
     const Home(),
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(), // Add comments
+      appBar: appBar(),
       drawer: const Drawer(),
       body: screens[_currentIndex],
       bottomNavigationBar: buttomNavigationBar(),
@@ -31,6 +32,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //FloatingActionButton
   Widget floatingActionButton() {
     return Align(
       alignment: const Alignment(1, 0.9),
@@ -48,6 +50,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //BottomNavigationBar
   BottomNavigationBar buttomNavigationBar() {
     return BottomNavigationBar(
       currentIndex: _currentIndex,

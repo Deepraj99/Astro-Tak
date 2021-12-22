@@ -28,6 +28,7 @@ class _HomeState extends State<Home> {
     getPanchangData();
   }
 
+  //Location API
   late String selectedLocation;
   late List<String> lcnData;
   late List<LocationData> postList = [];
@@ -41,7 +42,6 @@ class _HomeState extends State<Home> {
       postList = model.data;
       setState(() {
         location = postList;
-        print(location[0].placeName);
         selectedLocation = location[0].placeName.toString();
         lcnData = [
           location[0].placeName.toString(),
@@ -52,13 +52,13 @@ class _HomeState extends State<Home> {
         ];
       });
     } catch (e) {
-      print("error");
       return postList;
     }
 
     return postList;
   }
 
+  //DatePicker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
         context: context,
@@ -72,7 +72,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  //Panchang api
+  //Panchang API
   var model;
   getPanchangData() async {
     try {
