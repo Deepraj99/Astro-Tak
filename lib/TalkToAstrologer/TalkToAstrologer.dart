@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:core';
-import 'package:astro_tak/MenuItem.dart';
 import 'package:astro_tak/Models/PostModels.dart';
 import 'package:astro_tak/SearchWidget.dart';
 import 'package:astro_tak/TalkToAstrologer/Card.dart';
@@ -20,21 +19,6 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
   late List<PostModelData> strologers = [];
   String query = "";
   Timer? debouncer;
-
-  // GlobalKey<ScaffoldState> _scaff = new GlobalKey<ScaffoldState>();
-  // static const _popItem = <String>[
-  //   "one",
-  //   "Two",
-  //   "Three",
-  //   "Four",
-  // ];
-  // static final List<PopupMenuItem<String>> _pop = _popItem
-  //     .map((String val) => PopupMenuItem<String>(
-  //           value: val,
-  //           child: Text(val),
-  //         ))
-  //     .toList();
-  // late String value;
 
   @override
   void initState() {
@@ -61,6 +45,22 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
     return postList;
   }
 
+  //SearchIcon Visibility
+  bool viewVisible = false;
+  void showWidget() {
+    setState(() {
+      viewVisible = true;
+    });
+  }
+
+  void hideWidget() {
+    setState(() {
+      viewVisible = false;
+    });
+  }
+
+  String dropdownValue = "";
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -86,21 +86,35 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
                 ),
               ),
               SizedBox(
-                width: MediaQuery.of(context).size.width / 5,
+                width: 80,
                 height: 30,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    options("assets/icons/search.png", searchItems),
-                    options("assets/icons/filter.png", filters),
-                    options("assets/icons/sort.png", sortLists),
+                    InkWell(
+                      onTap: (viewVisible == true) ? hideWidget : showWidget,
+                      child: options("assets/icons/search.png"),
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: options("assets/icons/filter.png"),
+                    ),
+                    InkWell(
+                      onTap: () => _showPopupMenu(),
+                      child: options("assets/icons/sort.png"),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        buildSearch(),
+        Visibility(
+          maintainAnimation: true,
+          maintainState: true,
+          visible: viewVisible,
+          child: buildSearch(),
+        ),
         Expanded(
           child: ListView.builder(
             itemCount: strologers.length,
@@ -141,54 +155,71 @@ class _TalkToAstrologerState extends State<TalkToAstrologer> {
     });
   }
 
-  InkWell options(String url, Function fnc) {
-    return InkWell(
-      onTap: () => fnc,
-      child: Image.asset(
-        url,
-        width: 20,
-        height: 20,
-        fit: BoxFit.fill,
-      ),
+  Widget options(String url) {
+    return Image.asset(
+      url,
+      width: 20,
+      height: 20,
+      fit: BoxFit.fill,
     );
   }
 
-  searchItems() {}
+  void _showPopupMenu() async {
+    await showMenu(
+      context: context,
+      position: const RelativeRect.fromLTRB(100, 100, 100, 100),
+      items: [
+        PopupMenuItem(
+          value: 1,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Sort By",
+                style: GoogleFonts.poppins(
+                  color: Colors.orange,
+                ),
+              ),
+              const SizedBox(height: 5),
+              Container(
+                height: 1,
+                color: Colors.grey[500],
+              ),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: 2,
+          child: popUpData("Experience- high to low"),
+        ),
+        PopupMenuItem(
+          value: 3,
+          child: popUpData("Experience- low to high"),
+        ),
+        PopupMenuItem(
+          value: 4,
+          child: popUpData("Price- high to low"),
+        ),
+        PopupMenuItem(
+          value: 5,
+          child: popUpData("Price- low to high"),
+        ),
+      ],
+      elevation: 8.0,
+    ).then((value) {
+// NOTE: even you didnt select item this method will be called with null of value so you should call your call back with checking if value is not null
 
-  filters() {}
-
-  sortLists() {
-    // Column(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: [
-    //     Row(
-    //       children: [
-    //         const Text(
-    //           "PopUp Menu",
-    //           style: TextStyle(
-    //             fontSize: 30,
-    //           ),
-    //         ),
-    //         PopupMenuButton(
-    //           onSelected: (String val) {
-    //             value = val;
-    //           },
-    //           itemBuilder: (BuildContext context) => _pop,
-    //         ),
-    //       ],
-    //     ),
-    //   ],
-    // );
-    // [
-    //   PopupMenuButton(
-    //     itemBuilder: (context) => [
-    //       ...MenuItems.itemsFirst.map(buildItem).toList(),
-    //     ],
-    //   ),
-    // ];
+      if (value != null) print(value);
+    });
   }
 
-  // PopupMenuItem<MenuItem> buildItem(MenuItem item) => PopupMenuItem(
-  //       child: Text(item.text),
-  //     );
+  Row popUpData(String str) {
+    return Row(
+      children: [
+        const Icon(Icons.circle_outlined, size: 20),
+        const SizedBox(width: 20),
+        Text(str, style: GoogleFonts.poppins()),
+      ],
+    );
+  }
 }

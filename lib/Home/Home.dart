@@ -110,7 +110,7 @@ class _HomeState extends State<Home> {
         Container(
           margin: const EdgeInsets.only(left: 7),
           height: 20,
-          width: width / (2.8),
+          width: 140,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -134,10 +134,18 @@ class _HomeState extends State<Home> {
         Container(
           margin: const EdgeInsets.fromLTRB(10, 5, 10, 0),
           width: width,
-          child: Text(
-            "india is a country known for its festival but knowing the exact\ndates can sometimes be difficult. To ensure you do not miss out\non the critical dates we bring you the daily panchang.",
-            style: GoogleFonts.poppins(
-              fontSize: 11.5,
+          child: SizedBox(
+            width: width,
+            height: 60,
+            child: Card(
+              color: ATColors.kWhite,
+              elevation: 0.0,
+              child: Text(
+                "india is a country known for its festival but knowing the exact dates can sometimes be difficult. To ensure you do not miss out on the critical dates we bring you the daily panchang.",
+                style: GoogleFonts.poppins(
+                  fontSize: 11.5,
+                ),
+              ),
             ),
           ),
         ),
@@ -248,6 +256,10 @@ class _HomeState extends State<Home> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
+                  card(true),
+                  card(false),
+                  card(true),
+                  card(false),
                   card(true),
                   card(false),
                   card(true),

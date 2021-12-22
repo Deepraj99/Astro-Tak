@@ -1,3 +1,4 @@
+import 'package:astro_tak/utils/Colors.dart';
 import 'package:flutter/material.dart';
 
 class SearchWidget extends StatefulWidget {
@@ -30,17 +31,16 @@ class _SearchWidgetState extends State<SearchWidget> {
       height: 42,
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        border: Border.all(color: Colors.black26),
+        borderRadius: BorderRadius.circular(5),
+        color: Colors.grey[200],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          icon: Icon(Icons.search, color: style.color),
+          icon: const Icon(Icons.search, color: Colors.orange),
           suffixIcon: GestureDetector(
-            child: Icon(Icons.close, color: style.color),
+            child: const Icon(Icons.close, color: Colors.orange),
             onTap: () {
               controller.clear();
               widget.onChanged('');

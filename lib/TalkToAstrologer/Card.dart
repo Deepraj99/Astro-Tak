@@ -25,14 +25,14 @@ Column card(
         elevation: 0.0,
         color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 10, 10),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.network(
                 imgUrl,
-                width: 80,
-                height: 80,
+                width: 60,
+                height: 60,
                 fit: BoxFit.fill,
               ),
               const SizedBox(width: 10),
@@ -40,7 +40,7 @@ Column card(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: MediaQuery.of(context).size.width - 125,
+                    width: MediaQuery.of(context).size.width - 85,
                     height: 20,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
